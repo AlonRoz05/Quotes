@@ -1,7 +1,7 @@
 import torch
 
-from datasets import load_dataset, concatenate_datasets
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, Seq2SeqTrainingArguments, Seq2SeqTrainer, DataCollatorForSeq2Seq
+from datasets import load_dataset
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, Seq2SeqTrainingArguments, Seq2SeqTrainer
 
 import helper_fn
 
@@ -21,14 +21,7 @@ model = AutoModelForSeq2SeqLM.from_pretrained(model_id)
 dataset = load_dataset("csv", data_files="Data/quotes.csv", sep=",")
 dataset = dataset.train_test_split(test_size=0.2, shuffle=True)
 
-tokenized_inputs = concatenate_datasets(dataset["train"], dataset["test"]).map(lambda x: tokenizer(x["Tags"], truncation=True), batched=True, remove_columns=["Tags", "Quote"])
-max_source_length = max([len(x) for x in tokenized_inputs["input_ids"]]) # fix
-
-tokenized_targets = concatenate_datasets(dataset["train"], dataset["test"]).map(lambda x: tokenizer(x["Quote"], truncation=True), batched=True, remove_columns=["Tags", "Quote"])
-max_target_length = max([len(x) for x in tokenized_targets["input_ids"]]) # fix
-
 tokenized_dataset = dataset.map(helper_fn.preprocess_function, batched=True, remove_columns=["dialogue", "summary", "id"])
-data_collator = DataCollatorForSeq2Seq(tokenizer, model=model, label_pad_token_id=-100, pad_to_multiple_of=8 if device == "cuda" else None)
 
 # Fine tune the model
 args = Seq2SeqTrainingArguments(
