@@ -35,16 +35,3 @@ def compute_metrics(eval_preds, tokenizer):
     prediction_lens = [np.count_nonzero(pred != tokenizer.pad_token_id) for pred in preds]
     result["gen_len"] = np.mean(prediction_lens)
     return result
-
-def preprocess_function(examples, tokenizer, padding="max_length", prefix="Generate a motivation quote about: ", max_target_length = 1024, max_input_length = 128):
-    inputs = [prefix + item for item in examples["Tags"]]
-    model_inputs = tokenizer(inputs, max_length=max_input_length, padding=padding, truncation=True)
-    labels = tokenizer(text_target=examples["Quote"], max_length=max_target_length, padding=padding, truncation=True)
-
-    if padding == "max_length":
-        labels["input_ids"] = [
-            [(l if l != tokenizer.pad_token_id else -100) for l in label] for label in labels["input_ids"]
-        ]
-
-    model_inputs["labels"] = labels["input_ids"]
-    return model_inputs
