@@ -23,9 +23,9 @@ test_dataset = load_dataset("csv", data_files="Data/test_quotes_dataset.csv", se
 # preprocess function
 def preprocess_function(sample, padding="max_length"):
     inputs = ["Generate motivational quote about: " + item for item in sample["tags"]]
-    model_inputs = tokenizer(inputs, max_length=441, padding=padding, truncation=True)
+    model_inputs = tokenizer(inputs, max_length = 441, padding=padding, truncation=True)
 
-    labels = tokenizer(text_target=sample["quote"], max_length=351, padding=padding, truncation=True)
+    labels = tokenizer(text_target=sample["quote"], max_length = 351, padding=padding, truncation=True)
 
     if padding == "max_length":
         labels["input_ids"] = [
@@ -39,9 +39,9 @@ tokenized_train_dataset = train_dataset.map(preprocess_function, batched=True, r
 tokenized_test_dataset = test_dataset.map(preprocess_function, batched=True, remove_columns=["index", "quote", "tags"])
 
 data_collator = DataCollatorForSeq2Seq(tokenizer,
-                                       model=model, 
-                                       label_pad_token_id= -100, 
-                                       pad_to_multiple_of=8)
+                                       model = model, 
+                                       label_pad_token_id = -100, 
+                                       pad_to_multiple_of = 8)
 
 # Compute metrics function
 def postprocess_text(preds, labels):
@@ -72,31 +72,39 @@ def compute_metrics(eval_preds, tokenizer):
     result["gen_len"] = np.mean(prediction_lens)
     return result
 
+data_collator = DataCollatorForSeq2Seq(
+    tokenizer,
+    model = model,
+    label_pad_token_id = -100,
+    pad_to_multiple_of = 8
+)
+
 # Fine tune the model
 args = Seq2SeqTrainingArguments(
-    output_dir="test",
+    output_dir = "test",
     evaluation_strategy = "epoch",
-    save_strategy="epoch",
+    save_strategy = "epoch",
     weight_decay = 0.01,
     learning_rate = 5e-5,
     save_total_limit = 2,
     num_train_epochs = 10,
     per_device_train_batch_size = 8,
     per_device_eval_batch_size = 8,
-    metric_for_best_model="overall_f1",
-    load_best_model_at_end=True,
+    metric_for_best_model = "overall_f1",
+    load_best_model_at_end = True,
     predict_with_generate = True,
-    fp16 = True,
+    fp16 = False,
+    push_to_hub = True,
+    hub_model_id = "QuoteVibes_Model_Trained"
 )
 
 trainer = Seq2SeqTrainer(
-    model=model,
-    args=args,
-    train_dataset=tokenized_train_dataset["train"],
-    eval_dataset=tokenized_test_dataset["train"],
-    compute_metrics=compute_metrics,
+    model = model,
+    args = args,
+    train_dataset = tokenized_train_dataset["train"],
+    eval_dataset = tokenized_test_dataset["train"],
+    compute_metrics = compute_metrics,
 )
 
 trainer.train()
-trainer.evaluate()
-trainer.save_model("Models")
+trainer.push_to_hub("End of training")
