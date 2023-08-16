@@ -163,3 +163,4 @@ cython_debug/
 *.txt
 .vscode
 .DS_Store
+Fonts
