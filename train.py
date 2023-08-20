@@ -88,9 +88,8 @@ args = Seq2SeqTrainingArguments(
     learning_rate = 5e-5,
     save_total_limit = 2,
     num_train_epochs = 10,
-    per_device_train_batch_size = 8,
-    per_device_eval_batch_size = 8,
-    metric_for_best_model = "overall_f1",
+    per_device_train_batch_size = 16,
+    per_device_eval_batch_size = 16,
     load_best_model_at_end = True,
     predict_with_generate = True,
     fp16 = False,
@@ -107,4 +106,11 @@ trainer = Seq2SeqTrainer(
 )
 
 trainer.train()
+
 trainer.push_to_hub("End of training")
+
+trainer.save_model("Models")
+tokenizer.save_pretrained("Tokenizer")
+
+model.push_to_hub("QuoteVibes_Model_Trained")
+tokenizer.push_to_hub("QuoteVibes_Model_Trained")
