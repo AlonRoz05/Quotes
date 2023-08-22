@@ -1,9 +1,24 @@
 import postGen
 
+import pandas as pd
 import random
 
 from instagrapi import Client
 from instagrapi.types import Media, Story, UserShort
+
+from transformers import pipeline
+
+model_dir = "Rozi05/QuoteVibes_Model_Trained"
+
+classifier = pipeline("text2text-generation", model=model_dir)
+
+df_train = pd.read_csv("Data/train_quotes_dataset.csv")
+df_test= pd.read_csv("Data/test_quotes_dataset.csv")
+
+models_quote = classifier(random.choice(df_train.tags) if random.random() > 0.5 else random.choice(df_test.tags))
+models_quote_text = models_quote[0]["generated_text"]
+
+postGen.generate_image(models_quote_text)
 
 captions = [
     "If this quote speaks your truth, show it some love with a like!",
@@ -29,7 +44,7 @@ cl = Client()
 cl.login("login", "password")
 
 Media = cl.photo_upload(
-    path="photo.jpg",
+    path="post.jpg",
     caption=random.choice(captions),
     extra_data={
         "like_and_view_counts_disabled": False,

@@ -161,6 +161,10 @@ cython_debug/
 
 *.png
 *.txt
+
 .vscode
 .DS_Store
+
 Fonts
+Model_data
+Tokenizers

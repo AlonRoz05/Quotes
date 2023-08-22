@@ -17,12 +17,12 @@ tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForSeq2SeqLM.from_pretrained(model_id)
 
 # Load the data
-train_dataset = load_dataset("csv", data_files="Data/train_quotes_dataset.csv", sep=",")
-test_dataset = load_dataset("csv", data_files="Data/test_quotes_dataset.csv", sep=",")
+train_dataset = load_dataset("csv", data_files="Data/Old_dataset/train_quotes_dataset.csv", sep=",")
+test_dataset = load_dataset("csv", data_files="Data/Old_dataset/test_quotes_dataset.csv", sep=",")
 
 # preprocess function
 def preprocess_function(sample, padding="max_length"):
-    inputs = ["Generate motivational quote about: " + item for item in sample["tags"]]
+    inputs = ["Write a motivational quote about: " + item for item in sample["tags"]]
     model_inputs = tokenizer(inputs, max_length = 441, padding=padding, truncation=True)
 
     labels = tokenizer(text_target=sample["quote"], max_length = 351, padding=padding, truncation=True)
