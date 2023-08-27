@@ -168,3 +168,5 @@ cython_debug/
 Fonts
 Model_data
 Tokenizers
+
+twitter_keys.py

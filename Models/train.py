@@ -17,15 +17,17 @@ tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForSeq2SeqLM.from_pretrained(model_id)
 
 # Load the data
-train_dataset = load_dataset("csv", data_files="Data/Old_dataset/train_quotes_dataset.csv", sep=",")
-test_dataset = load_dataset("csv", data_files="Data/Old_dataset/test_quotes_dataset.csv", sep=",")
+dataset = load_dataset("csv", data_files="Data/New_dataset/quotes_dataset.csv", sep=",", split="train").train_test_split(test_size=0.2)
+
+max_source_length = 441
+max_target_length = 351
 
 # preprocess function
 def preprocess_function(sample, padding="max_length"):
     inputs = ["Write a motivational quote about: " + item for item in sample["tags"]]
-    model_inputs = tokenizer(inputs, max_length = 441, padding=padding, truncation=True)
+    model_inputs = tokenizer(inputs, max_length = max_source_length, padding=padding, truncation=True)
 
-    labels = tokenizer(text_target=sample["quote"], max_length = 351, padding=padding, truncation=True)
+    labels = tokenizer(text_target=sample["quote"], max_length = max_target_length, padding=padding, truncation=True)
 
     if padding == "max_length":
         labels["input_ids"] = [
@@ -35,8 +37,7 @@ def preprocess_function(sample, padding="max_length"):
     model_inputs["labels"] = labels["input_ids"]
     return model_inputs
 
-tokenized_train_dataset = train_dataset.map(preprocess_function, batched=True, remove_columns=["index", "quote", "tags"])
-tokenized_test_dataset = test_dataset.map(preprocess_function, batched=True, remove_columns=["index", "quote", "tags"])
+tokenized_dataset = dataset.map(preprocess_function, batched=True, remove_columns=["index", "quote", "tags"])
 
 data_collator = DataCollatorForSeq2Seq(tokenizer,
                                        model = model, 
@@ -100,8 +101,8 @@ args = Seq2SeqTrainingArguments(
 trainer = Seq2SeqTrainer(
     model = model,
     args = args,
-    train_dataset = tokenized_train_dataset["train"],
-    eval_dataset = tokenized_test_dataset["train"],
+    train_dataset = tokenized_dataset["train"],
+    eval_dataset = tokenized_dataset["test"],
     compute_metrics = compute_metrics,
 )
 
