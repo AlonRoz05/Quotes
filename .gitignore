@@ -169,5 +169,4 @@ Fonts
 Model_data
 Tokenizers
 
-twitter_keys.py
-Data/New_dataset/quotes_dataset.csv
+twitter_data.py

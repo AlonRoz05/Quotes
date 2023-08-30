@@ -24,7 +24,7 @@ max_target_length = 351
 
 # preprocess function
 def preprocess_function(sample, padding="max_length"):
-    inputs = ["Write a motivational quote about: " + item for item in sample["tags"]]
+    inputs = ["Write a motivational quote that this: " + item for item in sample["tags"] + " describes it best: "]
     model_inputs = tokenizer(inputs, max_length = max_source_length, padding=padding, truncation=True)
 
     labels = tokenizer(text_target=sample["quote"], max_length = max_target_length, padding=padding, truncation=True)
