@@ -160,7 +160,6 @@ cython_debug/
 #.idea/
 
 *.png
-*.txt
 
 .vscode
 .DS_Store
