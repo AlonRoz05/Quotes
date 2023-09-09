@@ -4,18 +4,14 @@ import postGen
 
 import tweepy
 import random
-import requests
 
 from better_profanity import profanity
 
-from twitter_data import bearer_token, API_key, API_secret, access_token, access_token_secret, captions, hashtags, model_api_token
+from transformers import pipeline
 
-API_URL = "https://api-inference.huggingface.co/models/Rozi05/QuoteVibes_Model_Trained"
-headers = {"Authorization": model_api_token}
+from twitter_data import bearer_token, API_key, API_secret, access_token, access_token_secret, captions, hashtags
 
-def query(payload):
-	response = requests.post(API_URL, headers=headers, json=payload)
-	return response.json()
+classifier = pipeline("text2text-generation", model="Rozi05/QuoteVibes_Model_Trained")
 
 client = tweepy.Client(bearer_token, API_key, API_secret, access_token, access_token_secret)
 
@@ -24,7 +20,7 @@ api = tweepy.API(auth)
 
 profanity.load_censor_words()
 
-tags_path = "Data/tags.json"
+tags_path = "tags.json"
 
 tag_1 = random.choice(pd.read_json(tags_path)["tags"])
 
@@ -51,14 +47,13 @@ for i in range(4):
 
 tags = f"{tag_1};{tag_2};{tag_3};{tag_4};{tag_5}"
 
-models_quote = query({"inputs": tags})
-print(models_quote)
+models_quote = classifier(tags)
 
 check_for_profanity = profanity.censor(models_quote[0]["generated_text"])
 test_for_text = models_quote[0]["generated_text"].replace(" ", "x")
 
 while "*" in check_for_profanity or test_for_text == "xxxxxxxxx":
-    models_quote = query({"inputs": tags})
+    models_quote = classifier(tags)
 
     check_for_profanity = profanity.censor(models_quote[0]["generated_text"])
     test_for_text = models_quote[0]["generated_text"].replace(" ", "x")

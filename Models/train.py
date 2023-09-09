@@ -11,20 +11,20 @@ nltk.download("punkt")
 
 metric = evaluate.load("rouge")
 
-model_id = 'google/flan-t5-base'
+model_id = 'google/flan-t5-large'
 
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForSeq2SeqLM.from_pretrained(model_id)
 
 # Load the data
-dataset = load_dataset("csv", data_files="Data/New_dataset/quotes_dataset.csv", sep=",", split="train").train_test_split(test_size=0.2)
+dataset = load_dataset("csv", data_files="Data/New_dataset/Upliftweet_dataset_updated.csv", sep=",", split="train").train_test_split(test_size=0.2, shuffle=True)
 
 max_source_length = 441
 max_target_length = 351
 
 # preprocess function
 def preprocess_function(sample, padding="max_length"):
-    inputs = ["Write a motivational quote that this: " + item for item in sample["tags"] + " describes it best: "]
+    inputs = ["Write a motivational quote that this: " + item for item in sample["tags"] + " describes it best."]
     model_inputs = tokenizer(inputs, max_length = max_source_length, padding=padding, truncation=True)
 
     labels = tokenizer(text_target=sample["quote"], max_length = max_target_length, padding=padding, truncation=True)
@@ -82,7 +82,7 @@ data_collator = DataCollatorForSeq2Seq(
 
 # Fine tune the model
 args = Seq2SeqTrainingArguments(
-    output_dir = "test",
+    output_dir = "model_training",
     evaluation_strategy = "epoch",
     save_strategy = "epoch",
     weight_decay = 0.01,
@@ -95,7 +95,7 @@ args = Seq2SeqTrainingArguments(
     predict_with_generate = True,
     fp16 = False,
     push_to_hub = True,
-    hub_model_id = "QuoteVibes_Model_Trained"
+    hub_model_id = "Upliftweet_Model"
 )
 
 trainer = Seq2SeqTrainer(
