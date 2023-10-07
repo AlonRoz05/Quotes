@@ -167,6 +167,7 @@ cython_debug/
 Fonts
 Model_data
 Tokenizers
+Twitter
 
 twitter_data.py
 app_api.py

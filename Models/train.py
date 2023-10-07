@@ -19,8 +19,8 @@ model = AutoModelForSeq2SeqLM.from_pretrained(model_id)
 # Load the data
 dataset = load_dataset("csv", data_files="Data/New_dataset/Upliftweet_dataset_updated.csv", sep=",", split="train").train_test_split(test_size=0.2, shuffle=True)
 
-max_source_length = 441
-max_target_length = 351
+max_source_length = 275
+max_target_length = 512
 
 # preprocess function
 def preprocess_function(sample, padding="max_length"):
