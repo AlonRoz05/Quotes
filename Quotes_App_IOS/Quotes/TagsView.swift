@@ -60,29 +60,13 @@ struct TagsView: View {
                                     Spacer()
                                 }
                                 HStack {
-                                    Text("Your used tag: \(UserDefaults.standard.string(forKey: "usedTag") ?? "default")")
+                                    Text("Using the \(UserDefaults.standard.string(forKey: "usedTag") ?? "default") tag")
                                         .foregroundColor(Color("TextColor"))
                                         .font(.system(size: 17.5, weight: .bold))
-                                        .multilineTextAlignment(.center)
                                         .padding(.horizontal)
                                         .padding(.top, 0.5)
                                         .padding(.bottom)
                                     Spacer()
-                                    
-                                    Button {
-                                        UserDefaults.standard.set(nil, forKey: "usedTag")
-                                        viewModel.selectTag(tagToSelect: "default")
-                                    } label: {
-                                        Image(systemName: "arrow.counterclockwise")
-                                    }
-                                    .buttonStyle(.borderedProminent)
-                                    .tint(Color("ButtonColor"))
-                                    .buttonBorderShape(.roundedRectangle(radius: 12))
-                                    .foregroundColor(Color("TextColor"))
-                                    .font(.system(size: 17.5, weight: .bold))
-                                    .padding(.horizontal)
-                                    .padding(.top, 0.5)
-                                    .padding(.bottom)
                                 }
                             }
 

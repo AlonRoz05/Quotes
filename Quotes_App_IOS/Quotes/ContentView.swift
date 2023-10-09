@@ -27,6 +27,10 @@ struct ContentView: View {
             if shouldSend {
                 do {
                     quote = try await getQuote()
+                    notify.sendNotification(quote: quote?.quote ?? "Check out today's quotes!", hour: 19, minute: 55)
+                } catch {}
+                do {
+                    quote = try await getQuote()
                     notify.sendNotification(quote: quote?.quote ?? "Check out today's quotes!", hour: 9, minute: 0)
                 } catch {}
                 do {

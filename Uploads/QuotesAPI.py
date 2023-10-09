@@ -45,9 +45,9 @@ async def return_quote(*, tag: str):
             while tag_5 == tag_1 and tag_5 == tag_2 and tag_5 == tag_3 and tag_5 == tag_4 or tag_5 == tag:
                 tag_5 = random.choice(pd.read_json(tags_path)["tags"])
 
-    tags = f"{tag}, {tag_1}, {tag_2}, {tag_3}, {tag_4}, {tag_5}, {tag}"
+    tags = f"{tag};{tag_1};{tag_2};{tag_3};{tag_4};{tag_5}, {tag}"
     if tag == "default":
-        tags = f"{tag_1}, {tag_2}, {tag_3}, {tag_4}, {tag_5}"
+        tags = f"{tag_1};{tag_2};{tag_3};{tag_4};{tag_5}"
 
     models_quote = classifier(tags)
 
