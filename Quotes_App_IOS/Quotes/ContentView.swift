@@ -60,9 +60,8 @@ struct HomeView: View {
                     LazyVStack() {
                         ForEach(viewModel.quotePosts) { qoutePost in
                             Post()
-                                .aspectRatio(contentMode: .fit)
+//                                .aspectRatio(contentMode: .fit)
                                 .containerRelativeFrame(.vertical, count: 1, span: 1, spacing: 0)
-                                .scrollTransition { content, phase in content .opacity(phase.isIdentity ? 1.0 : 0)}
                                 .onAppear {
                                     if self.isLastPost(qoutePost) {
                                         self.viewModel.fetchNextPage()

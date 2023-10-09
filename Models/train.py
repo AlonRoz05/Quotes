@@ -24,7 +24,7 @@ max_target_length = 512
 
 # preprocess function
 def preprocess_function(sample, padding="max_length"):
-    inputs = ["Write a motivational quote that this: " + item for item in sample["tags"] + " describes it best."]
+    inputs = ["Write a motivational quote that: " + (tag + ", describes it best.") for tag in sample["tags"]]
     model_inputs = tokenizer(inputs, max_length = max_source_length, padding=padding, truncation=True)
 
     labels = tokenizer(text_target=sample["quote"], max_length = max_target_length, padding=padding, truncation=True)
@@ -86,7 +86,7 @@ args = Seq2SeqTrainingArguments(
     evaluation_strategy = "epoch",
     save_strategy = "epoch",
     weight_decay = 0.01,
-    learning_rate = 5e-5,
+    learning_rate = 1e-3,
     save_total_limit = 2,
     num_train_epochs = 10,
     per_device_train_batch_size = 16,
@@ -95,7 +95,7 @@ args = Seq2SeqTrainingArguments(
     predict_with_generate = True,
     fp16 = False,
     push_to_hub = True,
-    hub_model_id = "Upliftweet_Model"
+    hub_model_id = "Quotes_Model_v2"
 )
 
 trainer = Seq2SeqTrainer(
@@ -113,5 +113,5 @@ trainer.push_to_hub("End of training")
 trainer.save_model("Models")
 tokenizer.save_pretrained("Tokenizer")
 
-model.push_to_hub("QuoteVibes_Model_Trained")
-tokenizer.push_to_hub("QuoteVibes_Model_Trained")
+model.push_to_hub("Quotes_Model_v2")
+tokenizer.push_to_hub("Quotes_Model_v2")

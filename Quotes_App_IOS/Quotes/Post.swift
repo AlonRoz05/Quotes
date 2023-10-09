@@ -14,7 +14,7 @@ struct Post: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .frame(width: 355, height: 350)
+                .frame(width: 355, height: 355)
                 .foregroundColor(Color("QuotesBackgroundColor"))
 
             Text(quote?.quote ?? "Unable to load quote")
