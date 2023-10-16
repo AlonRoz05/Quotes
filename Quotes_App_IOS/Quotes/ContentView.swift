@@ -8,27 +8,24 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var shouldSend = UserDefaults.standard.bool(forKey: "shouldSendNotifications")
+    @AppStorage("_shouldShowOnBoarding") var shouldShowOnBoarding: Bool = true
+
     @State var quote: GetModelsQuote?
 
     let notify = NotificationHandler()
-    var shouldSend = UserDefaults.standard.bool(forKey: "shouldSendNotifications")
 
     var body: some View {
-        ZStack {
-            Color("BackgroundColor")
-                .edgesIgnoringSafeArea(.all)
+        NavigationView {
+            ZStack {
+                Color("BackgroundColor")
+                    .edgesIgnoringSafeArea(.all)
 
-            HomeView()
-        }
-        .onAppear {
-            notify.askPremmision()
+                HomeView()
+            }
         }
         .task {
             if shouldSend {
-                do {
-                    quote = try await getQuote()
-                    notify.sendNotification(quote: quote?.quote ?? "Check out today's quotes!", hour: 19, minute: 55)
-                } catch {}
                 do {
                     quote = try await getQuote()
                     notify.sendNotification(quote: quote?.quote ?? "Check out today's quotes!", hour: 9, minute: 0)
@@ -42,6 +39,9 @@ struct ContentView: View {
                     notify.sendNotification(quote: quote?.quote ?? "Check out today's quotes!", hour: 21, minute: 0)
                 } catch {}
             }
+        }
+        .fullScreenCover(isPresented: $shouldShowOnBoarding) {
+            OnboardingView(shouldShowOnBoarding: $shouldShowOnBoarding)
         }
     }
 }
@@ -57,10 +57,10 @@ struct HomeView: View {
                     .ignoresSafeArea()
 
                 ScrollView(.vertical, showsIndicators: false) {
-                    LazyVStack() {
+                    LazyVStack(spacing: 0) {
                         ForEach(viewModel.quotePosts) { qoutePost in
                             Post()
-//                                .aspectRatio(contentMode: .fit)
+                                .aspectRatio(contentMode: .fit)
                                 .containerRelativeFrame(.vertical, count: 1, span: 1, spacing: 0)
                                 .onAppear {
                                     if self.isLastPost(qoutePost) {

@@ -93,7 +93,7 @@ args = Seq2SeqTrainingArguments(
     per_device_eval_batch_size = 16,
     load_best_model_at_end = True,
     predict_with_generate = True,
-    fp16 = False,
+    fp16 = True,
     push_to_hub = True,
     hub_model_id = "Quotes_Model_v2"
 )

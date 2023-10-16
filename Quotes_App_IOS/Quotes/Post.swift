@@ -9,12 +9,11 @@ import SwiftUI
 
 struct Post: View {
     @State var quote: GetModelsQuote?
-    @State var showErrorMassege: Bool = false
 
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .frame(width: 355, height: 355)
+            RoundedRectangle(cornerRadius: 15, style: .continuous)
+                .frame(width: 355, height: 330)
                 .foregroundColor(Color("QuotesBackgroundColor"))
 
             Text(quote?.quote ?? "Unable to load quote")
@@ -26,19 +25,19 @@ struct Post: View {
         .task {
             do {
                 quote = try await getQuote()
-            } catch {
-                showErrorMassege = true
-            }
+            } catch {}
         }
     }
 }
 
 func getQuote() async throws -> GetModelsQuote {
-    var usedTag = UserDefaults.standard.string(forKey: "usedTag")?.lowercased() ?? "default"
+    var usedTag = UserDefaults.standard.string(forKey: "usedTag")?.lowercased() ?? "default  "
     usedTag.removeLast()
     usedTag.removeLast()
-
+    
     let endpoint = "http://192.168.51.109:8000/?tag=\(String(describing: usedTag))"
+    
+    print(endpoint)
 
     guard let url = URL(string: endpoint) else {
         throw QuoteError.invalidURL

@@ -70,8 +70,6 @@ struct TagsView: View {
                                 }
                             }
 
-
-
                             LazyVGrid(columns: gridItems, spacing: 20) {
                                 if let tags = tagData?.tags {
                                     ForEach(tags, id: \.self) { tag in
