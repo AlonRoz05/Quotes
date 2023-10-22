@@ -14,7 +14,7 @@ struct ContentView: View {
     @AppStorage("_shouldShowOnBoarding") var shouldShowOnBoarding: Bool = true
     @AppStorage("_gotAccessForNotifications") var gotAccessForNotifications: Bool = true
 
-    @State var quote: GetModelsQuote?
+    @State var quote: ModelsQuote?
 
     let notify = NotificationHandler()
 
@@ -33,21 +33,19 @@ struct ContentView: View {
                         Image("AppIconForSplash")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 150, height: 150)
-                            .font(.system(size: 80))
-                            .foregroundColor(Color("TextColor"))
+                            .frame(width: 170, height: 170)
                     }
                     .scaleEffect(splashLogoSize)
                     .opacity(splashLogoOpacity)
                     .onAppear {
-                        withAnimation(.easeIn(duration: 2)) {
+                        withAnimation(.easeIn(duration: 1.3)) {
                             self.splashLogoSize = 0.8
                             self.splashLogoOpacity = 0.0
                         }
                     }
                 }
                 .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.45) {
                         withAnimation(Animation.easeIn(duration: 0.6)) {
                             self.isSplashActive = false
                         }
@@ -149,7 +147,7 @@ struct HomeView: View {
                 VStack {
                     HStack{
                         Spacer()
-                        NavigationLink(destination: TagsView()) {
+                        NavigationLink(destination: Text("Hi")) {
                             Image(systemName: "crown")
                                 .foregroundColor(Color("TextColor"))
                                 .padding(.top, 12)

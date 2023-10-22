@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct Post: View {
-    @State var quote: GetModelsQuote?
+    @State var quote: ModelsQuote?
     var usedTag = UserDefaults.standard.string(forKey: "usedTag")?.lowercased() ?? "default  "
 
     var body: some View {
@@ -41,12 +41,12 @@ struct Post: View {
     }
 }
 
-func getQuote() async throws -> GetModelsQuote {
+func getQuote() async throws -> ModelsQuote {
     var usedTag = UserDefaults.standard.string(forKey: "usedTag") ?? "default  "
     usedTag.removeLast()
     usedTag.removeLast()
 
-    let endpoint = "http://192.168.51.109:8000/?tag=\(String(usedTag.lowercased()))"
+    let endpoint = "http://127.0.0.1:8000/get-quote/\(String(usedTag.lowercased()))"
 
     guard let url = URL(string: endpoint) else {
         throw QuoteError.invalidURL
@@ -61,14 +61,14 @@ func getQuote() async throws -> GetModelsQuote {
     do {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return try decoder.decode(GetModelsQuote.self, from: data)
+        return try decoder.decode(ModelsQuote.self, from: data)
     } catch {
         throw QuoteError.invailidData
     }
 }
 
 
-struct GetModelsQuote: Codable {
+struct ModelsQuote: Codable {
     let quote: String
 }
 
