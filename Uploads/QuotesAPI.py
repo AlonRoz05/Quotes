@@ -3,7 +3,6 @@ import pandas as pd
 import random
 
 from fastapi import FastAPI
-import uvicorn
 
 from better_profanity import profanity
 
@@ -18,7 +17,7 @@ profanity.load_censor_words()
 tags_path = "tags.json"
 
 @app.get("/")
-async def return_quote(*, tag: str):
+async def return_quote(tag: str):
     for i in range(5):
         if i == 0:
             tag_1 = random.choice(pd.read_json(tags_path)["tags"])
@@ -45,7 +44,7 @@ async def return_quote(*, tag: str):
             while tag_5 == tag_1 and tag_5 == tag_2 and tag_5 == tag_3 and tag_5 == tag_4 or tag_5 == tag:
                 tag_5 = random.choice(pd.read_json(tags_path)["tags"])
 
-    tags = f"{tag};{tag_1};{tag_2};{tag_3};{tag_4};{tag_5}, {tag}"
+    tags = f"{tag};{tag_1};{tag_2};{tag_3};{tag_4};{tag_5};{tag}"
     if tag == "default":
         tags = f"{tag_1};{tag_2};{tag_3};{tag_4};{tag_5}"
 
@@ -62,7 +61,3 @@ async def return_quote(*, tag: str):
 
     models_quote = models_quote[0]["generated_text"]
     return {"quote": models_quote}
-
-
-if __name__ == "__main":
-    uvicorn.run(app, host="0.0.0.0", port=8000)

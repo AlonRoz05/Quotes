@@ -9,15 +9,17 @@ import Foundation
 import UserNotifications
 
 class NotificationHandler {
-    func askPremmision() {
+    func askPremmision() -> Bool {
+        var canSend = true
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) {
             success, error in if success {
-                print("Access granted!")
+                canSend = true
             }
-            else if let error = error {
-                print(error.localizedDescription)
+            else {
+                canSend = false
             }
         }
+        return canSend
     }
     
     func sendNotification(quote: String, hour: Int, minute: Int) {

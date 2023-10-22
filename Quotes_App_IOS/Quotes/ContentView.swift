@@ -8,36 +8,105 @@
 import SwiftUI
 
 struct ContentView: View {
+    @ObservedObject var networkManager = NetworkManager()
+
     @State var shouldSend = UserDefaults.standard.bool(forKey: "shouldSendNotifications")
     @AppStorage("_shouldShowOnBoarding") var shouldShowOnBoarding: Bool = true
+    @AppStorage("_gotAccessForNotifications") var gotAccessForNotifications: Bool = true
 
     @State var quote: GetModelsQuote?
 
     let notify = NotificationHandler()
 
-    var body: some View {
-        NavigationView {
-            ZStack {
-                Color("BackgroundColor")
-                    .edgesIgnoringSafeArea(.all)
+    @State private var isSplashActive = true
+    @State private var splashLogoSize = 1.0
+    @State private var splashLogoOpacity = 0.6
 
-                HomeView()
+    var body: some View {
+        ZStack {
+            Color("BackgroundColor")
+                .edgesIgnoringSafeArea(.all)
+
+            if isSplashActive {
+                VStack {
+                    VStack {
+                        Image("AppIconForSplash")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 150, height: 150)
+                            .font(.system(size: 80))
+                            .foregroundColor(Color("TextColor"))
+                    }
+                    .scaleEffect(splashLogoSize)
+                    .opacity(splashLogoOpacity)
+                    .onAppear {
+                        withAnimation(.easeIn(duration: 2)) {
+                            self.splashLogoSize = 0.8
+                            self.splashLogoOpacity = 0.0
+                        }
+                    }
+                }
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        withAnimation(Animation.easeIn(duration: 0.6)) {
+                            self.isSplashActive = false
+                        }
+                    }
+                }
             }
-        }
-        .task {
-            if shouldSend {
-                do {
-                    quote = try await getQuote()
-                    notify.sendNotification(quote: quote?.quote ?? "Check out today's quotes!", hour: 9, minute: 0)
-                } catch {}
-                do {
-                    quote = try await getQuote()
-                    notify.sendNotification(quote: quote?.quote ?? "Check out today's quotes!", hour: 15, minute: 0)
-                } catch {}
-                do {
-                    quote = try await getQuote()
-                    notify.sendNotification(quote: quote?.quote ?? "Check out today's quotes!", hour: 21, minute: 0)
-                } catch {}
+            else {
+                if networkManager.isConnected {
+                    HomeView()
+                        .task {
+                            if shouldSend {
+                                let canSend = notify.askPremmision()
+                                    if canSend {
+                                    do {
+                                        quote = try await getQuote()
+                                        notify.sendNotification(quote: quote?.quote ?? "Check out today's quotes!", hour: 9, minute: 0)
+                                    } catch {}
+                                    do {
+                                        quote = try await getQuote()
+                                        notify.sendNotification(quote: quote?.quote ?? "Check out today's quotes!", hour: 15, minute: 0)
+                                    } catch {}
+                                    do {
+                                        quote = try await getQuote()
+                                        notify.sendNotification(quote: quote?.quote ?? "Check out today's quotes!", hour: 21, minute: 0)
+                                    } catch {}
+                                }
+                            }
+                        }
+                } else {
+                    ZStack {
+                        Color("BackgroundColor")
+                            .edgesIgnoringSafeArea(.all)
+                        
+                        VStack {
+                            Image(systemName: "wifi.slash")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 150, height: 150)
+                                .padding()
+                            Text("It looks like you're not connected to the internet").bold()
+                            if !networkManager.isConnected {
+                                Button {
+                                    print("Hi")
+                                } label: {
+                                    Text("Retry")
+                                        .font(.headline)
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(Color("TextColor"))
+                                        .multilineTextAlignment(.center)
+                                        .frame(width: 80, height: 35)
+                                }
+                                .buttonStyle(.borderedProminent)
+                                .tint(Color("ButtonColor"))
+                                .buttonBorderShape(.roundedRectangle(radius: 12))
+                                .padding()
+                            }
+                        }
+                    }
+                }
             }
         }
         .fullScreenCover(isPresented: $shouldShowOnBoarding) {
@@ -78,6 +147,18 @@ struct HomeView: View {
                 }
 
                 VStack {
+                    HStack{
+                        Spacer()
+                        NavigationLink(destination: TagsView()) {
+                            Image(systemName: "crown")
+                                .foregroundColor(Color("TextColor"))
+                                .padding(.top, 12)
+                                .padding(.bottom, 12)
+                                .padding(.horizontal, 12)
+                                .background(Color("ButtonColor"), in: RoundedRectangle(cornerRadius: 12))
+                        }
+                    }
+                    .padding()
                     Spacer()
                     HStack {
                         Button {
@@ -91,6 +172,7 @@ struct HomeView: View {
                         } label: {
                             Text("Notifications")
                                 .foregroundColor(Color("TextColor"))
+                                .frame(width: 100, height: 25)
                         }
                         .buttonStyle(.borderedProminent)
                         .tint(Color("ButtonColor"))

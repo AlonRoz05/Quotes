@@ -9,6 +9,7 @@ import SwiftUI
 
 struct Post: View {
     @State var quote: GetModelsQuote?
+    var usedTag = UserDefaults.standard.string(forKey: "usedTag")?.lowercased() ?? "default  "
 
     var body: some View {
         ZStack {
@@ -21,6 +22,16 @@ struct Post: View {
                 .font(.system(size: 22, weight: .bold))
                 .multilineTextAlignment(.center)
                 .frame(width: 345, height: 340)
+
+            VStack {
+                HStack {
+                    Spacer()
+                    Text(String(usedTag.last!))
+                        .font(.system(size: 28, weight: .bold))
+                }
+                Spacer()
+            }
+            .frame(width: 335, height: 315)
         }
         .task {
             do {
@@ -31,13 +42,11 @@ struct Post: View {
 }
 
 func getQuote() async throws -> GetModelsQuote {
-    var usedTag = UserDefaults.standard.string(forKey: "usedTag")?.lowercased() ?? "default  "
+    var usedTag = UserDefaults.standard.string(forKey: "usedTag") ?? "default  "
     usedTag.removeLast()
     usedTag.removeLast()
-    
-    let endpoint = "http://192.168.51.109:8000/?tag=\(String(describing: usedTag))"
-    
-    print(endpoint)
+
+    let endpoint = "http://192.168.51.109:8000/?tag=\(String(usedTag.lowercased()))"
 
     guard let url = URL(string: endpoint) else {
         throw QuoteError.invalidURL

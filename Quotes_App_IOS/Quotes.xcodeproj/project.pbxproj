@@ -19,6 +19,7 @@
 		707228552AD3E23B00B15CA3 /* tags.json in Resources */ = {isa = PBXBuildFile; fileRef = 707228542AD3E23B00B15CA3 /* tags.json */; };
 		708C41B62ACC74FD00B6235C /* TagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708C41B52ACC74FD00B6235C /* TagsView.swift */; };
 		708F77A52AD92FBD00FF7661 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708F77A42AD92FBD00FF7661 /* OnboardingView.swift */; };
+		70B88A0F2AE012A8005AECB1 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B88A0E2AE012A8005AECB1 /* NetworkManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +55,7 @@
 		707228542AD3E23B00B15CA3 /* tags.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = tags.json; sourceTree = "<group>"; };
 		708C41B52ACC74FD00B6235C /* TagsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsView.swift; sourceTree = "<group>"; };
 		708F77A42AD92FBD00FF7661 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		70B88A0E2AE012A8005AECB1 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +108,7 @@
 			children = (
 				7047BD9B2AC5DFC900A42BD0 /* QuotesApp.swift */,
 				7047BD9D2AC5DFC900A42BD0 /* ContentView.swift */,
+				70B88A0E2AE012A8005AECB1 /* NetworkManager.swift */,
 				708F77A42AD92FBD00FF7661 /* OnboardingView.swift */,
 				7047BDC52AC5E15900A42BD0 /* Post.swift */,
 				708C41B52ACC74FD00B6235C /* TagsView.swift */,
@@ -276,6 +279,7 @@
 				7047BDC62AC5E15900A42BD0 /* Post.swift in Sources */,
 				7047BDCA2AC5E18600A42BD0 /* NotificationHandlers.swift in Sources */,
 				7047BD9E2AC5DFC900A42BD0 /* ContentView.swift in Sources */,
+				70B88A0F2AE012A8005AECB1 /* NetworkManager.swift in Sources */,
 				708F77A52AD92FBD00FF7661 /* OnboardingView.swift in Sources */,
 				7047BD9C2AC5DFC900A42BD0 /* QuotesApp.swift in Sources */,
 				708C41B62ACC74FD00B6235C /* TagsView.swift in Sources */,

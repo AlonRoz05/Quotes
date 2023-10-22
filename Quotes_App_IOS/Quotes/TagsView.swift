@@ -60,13 +60,27 @@ struct TagsView: View {
                                     Spacer()
                                 }
                                 HStack {
-                                    Text("Using the \(UserDefaults.standard.string(forKey: "usedTag") ?? "default") tag")
+                                    Text("Using the \(fixDefaultTag(tagName: UserDefaults.standard.string(forKey: "usedTag") ?? "default")) tag")
                                         .foregroundColor(Color("TextColor"))
                                         .font(.system(size: 17.5, weight: .bold))
                                         .padding(.horizontal)
                                         .padding(.top, 0.5)
                                         .padding(.bottom)
                                     Spacer()
+                                    Button {
+                                        UserDefaults.standard.set(nil, forKey: "usedTag")
+                                        viewModel.selectTag(tagToSelect: "default  ")
+                                    } label: {
+                                        Image(systemName: "arrow.counterclockwise")
+                                    }
+                                    .buttonStyle(.borderedProminent)
+                                    .tint(Color("ButtonColor"))
+                                    .buttonBorderShape(.roundedRectangle(radius: 12))
+                                    .foregroundColor(Color("TextColor"))
+                                    .font(.system(size: 17.5, weight: .bold))
+                                    .padding(.horizontal)
+                                    .padding(.top, 0.5)
+                                    .padding(.bottom)
                                 }
                             }
 
@@ -93,6 +107,15 @@ struct TagsView: View {
         .alert(isPresented: $showError, content: {
             Alert(title: Text("An error appeared"), message: Text("Oops something went wrong, please try again later."), dismissButton: .default(Text("Ok")))
         })
+    }
+    
+    func fixDefaultTag(tagName: String) -> String {
+        if tagName == "default  " {
+            return "default"
+        }
+        else {
+            return tagName
+        }
     }
 }
 
