@@ -12,9 +12,10 @@ struct ContentView: View {
 
     @State var shouldSend = UserDefaults.standard.bool(forKey: "shouldSendNotifications")
     @AppStorage("_shouldShowOnBoarding") var shouldShowOnBoarding: Bool = true
-    @AppStorage("_gotAccessForNotifications") var gotAccessForNotifications: Bool = true
 
     @State var quote: ModelsQuote?
+
+    @State var isPro = false
 
     let notify = NotificationHandler()
 
@@ -29,6 +30,12 @@ struct ContentView: View {
 
             if isSplashActive {
                 VStack {
+                    Button {
+                        isPro.toggle()
+                    } label: {
+                        Text("be pro")
+                    }
+                    .buttonStyle(.bordered)
                     VStack {
                         Image("AppIconForSplash")
                             .resizable()
@@ -54,26 +61,30 @@ struct ContentView: View {
             }
             else {
                 if networkManager.isConnected {
-                    HomeView()
-                        .task {
-                            if shouldSend {
-                                let canSend = notify.askPremmision()
+                    if isPro {
+                        ProHomeView()
+                            .task {
+                                if shouldSend {
+                                    let canSend = notify.askPremmision()
                                     if canSend {
-                                    do {
-                                        quote = try await getQuote()
-                                        notify.sendNotification(quote: quote?.quote ?? "Check out today's quotes!", hour: 9, minute: 0)
-                                    } catch {}
-                                    do {
-                                        quote = try await getQuote()
-                                        notify.sendNotification(quote: quote?.quote ?? "Check out today's quotes!", hour: 15, minute: 0)
-                                    } catch {}
-                                    do {
-                                        quote = try await getQuote()
-                                        notify.sendNotification(quote: quote?.quote ?? "Check out today's quotes!", hour: 21, minute: 0)
-                                    } catch {}
+                                        do {
+                                            quote = try await getQuote()
+                                            notify.sendNotification(quote: quote?.quote ?? "Check out today's quotes!", hour: 9, minute: 0)
+                                        } catch {}
+                                        do {
+                                            quote = try await getQuote()
+                                            notify.sendNotification(quote: quote?.quote ?? "Check out today's quotes!", hour: 15, minute: 0)
+                                        } catch {}
+                                        do {
+                                            quote = try await getQuote()
+                                            notify.sendNotification(quote: quote?.quote ?? "Check out today's quotes!", hour: 21, minute: 0)
+                                        } catch {}
+                                    }
                                 }
                             }
-                        }
+                    } else {
+                        FreeHomeView()
+                    }
                 } else {
                     ZStack {
                         Color("BackgroundColor")
@@ -110,97 +121,6 @@ struct ContentView: View {
         .fullScreenCover(isPresented: $shouldShowOnBoarding) {
             OnboardingView(shouldShowOnBoarding: $shouldShowOnBoarding)
         }
-    }
-}
-
-struct HomeView: View {
-    @ObservedObject var viewModel = TextPostViewModel()
-    @State var shouldSend = UserDefaults.standard.bool(forKey: "shouldSendNotifications")
-
-    var body: some View {
-        NavigationView {
-            ZStack {
-                Color("BackgroundColor")
-                    .ignoresSafeArea()
-
-                ScrollView(.vertical, showsIndicators: false) {
-                    LazyVStack(spacing: 0) {
-                        ForEach(viewModel.quotePosts) { qoutePost in
-                            Post()
-                                .aspectRatio(contentMode: .fit)
-                                .containerRelativeFrame(.vertical, count: 1, span: 1, spacing: 0)
-                                .onAppear {
-                                    if self.isLastPost(qoutePost) {
-                                        self.viewModel.fetchNextPage()
-                                    }
-                                }
-                        }
-                    }
-                    .scrollTargetLayout()
-                }
-                .scrollTargetBehavior(.paging)
-                .ignoresSafeArea()
-                .onAppear {
-                    self.viewModel.fetchNextPage()
-                }
-
-                VStack {
-                    HStack{
-                        Spacer()
-                        NavigationLink(destination: Text("Hi")) {
-                            Image(systemName: "crown")
-                                .foregroundColor(Color("TextColor"))
-                                .padding(.top, 12)
-                                .padding(.bottom, 12)
-                                .padding(.horizontal, 12)
-                                .background(Color("ButtonColor"), in: RoundedRectangle(cornerRadius: 12))
-                        }
-                    }
-                    .padding()
-                    Spacer()
-                    HStack {
-                        Button {
-                            if shouldSend {
-                                shouldSend = false
-                                UserDefaults.standard.set(shouldSend, forKey: "shouldSendNotifications")
-                            } else {
-                                shouldSend = true
-                                UserDefaults.standard.set(shouldSend, forKey: "shouldSendNotifications")
-                            }
-                        } label: {
-                            Text("Notifications")
-                                .foregroundColor(Color("TextColor"))
-                                .frame(width: 100, height: 25)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(Color("ButtonColor"))
-                        .buttonBorderShape(.roundedRectangle(radius: 12))
-                        .overlay(shouldSend ? RoundedRectangle(cornerRadius: 12) .stroke(.mint, lineWidth: 2) : nil)
-                        .animation(Animation.default, value: UUID())
-
-                        Spacer()
-
-                        NavigationLink(destination: TagsView()) {
-                            Image(systemName: "tag")
-                                .foregroundColor(Color("TextColor"))
-                                .padding(.top, 12)
-                                .padding(.bottom, 12)
-                                .padding(.horizontal, 12)
-                                .background(Color("ButtonColor"), in: RoundedRectangle(cornerRadius: 12))
-                        }
-
-                    }
-                    .padding()
-                }
-            }
-        }
-    }
-
-    private func isLastPost(_ post: QuotePost) -> Bool {
-        if let lastPost = viewModel.quotePosts.last {
-            return post.id == lastPost.id
-        }
-        return false
     }
 }
 

@@ -29,6 +29,8 @@ struct TagsView: View {
     @State private var showError = false
     @StateObject private var viewModel = TagsFunctionsViewModel()
     private let gridItems = [GridItem(.flexible()), GridItem(.flexible())]
+    
+    let isProVersion: Bool
 
     @State private var tagData: TagData? = {
             if let url = Bundle.main.url(forResource: "tags", withExtension: "json"),
@@ -54,9 +56,8 @@ struct TagsView: View {
                                     Text("Tags")
                                         .foregroundColor(Color("TextColor"))
                                         .font(.system(size: 40, weight: .bold))
-                                        .multilineTextAlignment(.center)
                                         .padding(.horizontal)
-                                        .padding(.top)
+                                        .padding(.bottom, 2)
                                     Spacer()
                                 }
                                 HStack {
@@ -64,8 +65,6 @@ struct TagsView: View {
                                         .foregroundColor(Color("TextColor"))
                                         .font(.system(size: 17.5, weight: .bold))
                                         .padding(.horizontal)
-                                        .padding(.top, 0.5)
-                                        .padding(.bottom)
                                     Spacer()
                                     Button {
                                         UserDefaults.standard.set(nil, forKey: "usedTag")
@@ -79,15 +78,15 @@ struct TagsView: View {
                                     .foregroundColor(Color("TextColor"))
                                     .font(.system(size: 17.5, weight: .bold))
                                     .padding(.horizontal)
-                                    .padding(.top, 0.5)
-                                    .padding(.bottom)
                                 }
+                                .padding(.bottom, 5)
                             }
 
+                            // fix this
                             LazyVGrid(columns: gridItems, spacing: 20) {
                                 if let tags = tagData?.tags {
                                     ForEach(tags, id: \.self) { tag in
-                                        Tag(TagName: tag, viewModel: viewModel, isSelected: tag == viewModel.selectedTag)
+                                        Tag(TagName: tag, viewModel: viewModel, isSelected: tag == viewModel.selectedTag, isPro: isProVersion)
                                             .onTapGesture {
                                                 viewModel.selectTag(tagToSelect: tag)
                                             }
@@ -108,7 +107,7 @@ struct TagsView: View {
             Alert(title: Text("An error appeared"), message: Text("Oops something went wrong, please try again later."), dismissButton: .default(Text("Ok")))
         })
     }
-    
+
     func fixDefaultTag(tagName: String) -> String {
         if tagName == "default  " {
             return "default"
@@ -121,43 +120,88 @@ struct TagsView: View {
 
 struct Tag: View {
     @State private var currentUsedTagName = UserDefaults.standard.string(forKey: "usedTag") ?? "default"
-    @State var TagName = ""
-
     @ObservedObject private var viewModel: TagsFunctionsViewModel
+    @State var TagName = ""
+    @State var isPro: Bool
+    
+    @State var showProAlertForTags = false
 
     var isSelected: Bool
 
-    init(TagName: String, viewModel: TagsFunctionsViewModel, isSelected: Bool) {
+    init(TagName: String, viewModel: TagsFunctionsViewModel, isSelected: Bool, isPro: Bool) {
         self.TagName = TagName
         self.viewModel = viewModel
         self.isSelected = isSelected
+        self.isPro = isPro
     }
 
     var body: some View {
         ZStack {
             VStack {
-                Button {
-                    viewModel.selectTag(tagToSelect: TagName)
-                } label: {
-                    Text(TagName)
-                        .font(.headline)
-                        .fontWeight(.semibold)
-                        .foregroundColor(Color("TextColor"))
-                        .multilineTextAlignment(.center)
-                        .frame(width: 155, height: 85)
+                if isPro {
+                    Button {
+                        print("hiiiii")
+                        viewModel.selectTag(tagToSelect: TagName)
+                    } label: {
+                        Text(TagName)
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                            .foregroundColor(Color("TextColor"))
+                            .multilineTextAlignment(.center)
+                            .frame(width: 155, height: 85)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(Color("ButtonColor"))
+                    .buttonBorderShape(.roundedRectangle(radius: 12))
+                    .overlay(isSelected ? RoundedRectangle(cornerRadius: 12).stroke(Color.mint, lineWidth: 2) : nil)
+                    .animation(.easeInOut, value: isSelected)
+                    .overlay(currentUsedTagName == TagName ? RoundedRectangle(cornerRadius: 12).stroke(Color.gray, lineWidth: 2) : nil)
+                    .animation(.easeInOut, value: currentUsedTagName == TagName)
+                } else {
+                    if TagName == "ambition 🌟" || TagName ==  "inspiring 💡" || TagName == "positivity 😄" || TagName == "motivational 🚀" {
+                        Button {
+                            print("hiiiii")
+                            viewModel.selectTag(tagToSelect: TagName)
+                        } label: {
+                            Text(TagName)
+                                .font(.headline)
+                                .fontWeight(.semibold)
+                                .foregroundColor(Color("TextColor"))
+                                .multilineTextAlignment(.center)
+                                .frame(width: 155, height: 85)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(Color("ButtonColor"))
+                        .buttonBorderShape(.roundedRectangle(radius: 12))
+                        .overlay(isSelected ? RoundedRectangle(cornerRadius: 12).stroke(Color.mint, lineWidth: 2) : nil)
+                        .animation(.easeInOut, value: isSelected)
+                        .overlay(currentUsedTagName == TagName ? RoundedRectangle(cornerRadius: 12).stroke(Color.gray, lineWidth: 2) : nil)
+                        .animation(.easeInOut, value: currentUsedTagName == TagName)
+                    }
+                    else {
+                        Button {
+                            showProAlertForTags.toggle()
+                        } label: {
+                            Text(TagName)
+                                .font(.headline)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.gray)
+                                .multilineTextAlignment(.center)
+                                .frame(width: 155, height: 85)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(Color("ButtonColor")).opacity(0.5)
+                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(.thinMaterial, lineWidth: 2))
+                    }
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(Color("ButtonColor"))
-                .buttonBorderShape(.roundedRectangle(radius: 12))
-                .overlay(isSelected ? RoundedRectangle(cornerRadius: 12).stroke(Color.mint, lineWidth: 2) : nil)
-                .animation(.easeInOut, value: isSelected)
-                .overlay(currentUsedTagName == TagName ? RoundedRectangle(cornerRadius: 12).stroke(Color.gray, lineWidth: 2) : nil)
-                .animation(.easeInOut, value: currentUsedTagName == TagName)
             }
         }
+        .alert(isPresented: $showProAlertForTags, content: {
+            Alert(title: Text("Oops this is a pro exclusive tag."), message: Text("Get pro and you get it"), dismissButton: .default(Text("Ok")))
+        })
     }
 }
 
 #Preview {
-    TagsView()
+    TagsView(isProVersion: true)
 }

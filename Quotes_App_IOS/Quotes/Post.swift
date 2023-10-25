@@ -78,7 +78,6 @@ enum QuoteError: Error {
     case invailidData
 }
 
-
 #Preview {
     Post()
 }
