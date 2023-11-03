@@ -18,19 +18,24 @@ struct FreeHomeView: View {
             ZStack {
                 Color("BackgroundColor")
                     .ignoresSafeArea()
-                
+
                 ScrollView(.vertical, showsIndicators: false) {
-                    LazyVStack(spacing: 0) {
-                        ForEach(viewModel.quotePosts) { qoutePost in
-                            Post()
-                                .aspectRatio(contentMode: .fit)
-                                .containerRelativeFrame(.vertical, count: 1, span: 1, spacing: 0)
-                                .onAppear {
-                                    if self.isLastPost(qoutePost) {
-                                        print("hi")
-                                    }
-                                }
-                        }
+                    VStack {
+                        Post()
+                            .aspectRatio(contentMode: .fit)
+                            .containerRelativeFrame(.vertical, count: 1, span: 1, spacing: 0)
+                        Post()
+                            .aspectRatio(contentMode: .fit)
+                            .containerRelativeFrame(.vertical, count: 1, span: 1, spacing: 0)
+                        Post()
+                            .aspectRatio(contentMode: .fit)
+                            .containerRelativeFrame(.vertical, count: 1, span: 1, spacing: 0)
+                        Post()
+                            .aspectRatio(contentMode: .fit)
+                            .containerRelativeFrame(.vertical, count: 1, span: 1, spacing: 0)
+                        Post()
+                            .aspectRatio(contentMode: .fit)
+                            .containerRelativeFrame(.vertical, count: 1, span: 1, spacing: 0)
 
                         VStack {
                             ZStack {
@@ -38,7 +43,7 @@ struct FreeHomeView: View {
                                     .frame(width: 355, height: 330)
                                     .foregroundColor(Color("QuotesBackgroundColor"))
                                 
-                                Text("You have reached the daily limit!")
+                                Text("You have reached your daily limit!")
                                     .foregroundColor(Color("TextColor"))
                                     .font(.system(size: 22, weight: .bold))
                                     .multilineTextAlignment(.center)
@@ -72,9 +77,7 @@ struct FreeHomeView: View {
                         NavigationLink(destination: Text("Hi")) {
                             Image(systemName: "crown")
                                 .foregroundColor(Color("TextColor"))
-                                .padding(.top, 12)
-                                .padding(.bottom, 12)
-                                .padding(.horizontal, 12)
+                                .padding(12)
                                 .background(Color("ButtonColor"), in: RoundedRectangle(cornerRadius: 12))
                         }
                     }
@@ -99,9 +102,7 @@ struct FreeHomeView: View {
                         NavigationLink(destination: TagsView(isProVersion: false)) {
                             Image(systemName: "tag")
                                 .foregroundColor(Color("TextColor"))
-                                .padding(.top, 12)
-                                .padding(.bottom, 12)
-                                .padding(.horizontal, 12)
+                                .padding(12)
                                 .background(Color("ButtonColor"), in: RoundedRectangle(cornerRadius: 12))
                         }
 

@@ -33,8 +33,11 @@ struct OnboardingView: View {
 
     var body: some View {
         ZStack {
-            Color("BackgroundColor")
+            Image("onBoardingBackgroundImage")
+                .resizable()
+                .aspectRatio(contentMode: .fill)
                 .ignoresSafeArea()
+
             VStack {
                 ZStack {
                     switch onboardingview {
@@ -116,10 +119,11 @@ struct OnboardingView: View {
 struct FirstView: View {
     var body: some View {
         VStack {
+            Spacer()
             Text("Welcome to Quotes 👋")
                 .font(.system(size: 30, weight: .bold))
                 .multilineTextAlignment(.center)
-                .foregroundColor(Color("TextColor"))
+                .foregroundColor(Color("TextColorOnBoarding"))
                 .padding()
                 .padding(.top)
 
@@ -127,7 +131,7 @@ struct FirstView: View {
             Text("Welcome to Quotes, Our world of inspiration! Quotes will empower you to discover your full potential. Get ready for a transformative journey towards your best self.")
                 .font(.system(size: 18, weight: .semibold))
                 .multilineTextAlignment(.center)
-                .foregroundColor(Color("TextColor"))
+                .foregroundColor(Color("TextColorOnBoarding"))
                 .padding(.bottom)
             
             Spacer()
@@ -139,19 +143,21 @@ struct FirstView: View {
 struct SecondView: View {
     var body: some View {
         VStack {
+            Spacer()
             Text("Daily Motivation Boost 🚀")
                 .font(.system(size: 30, weight: .bold))
                 .multilineTextAlignment(.center)
-                .foregroundColor(Color("TextColor"))
+                .foregroundColor(Color("TextColorOnBoarding"))
                 .padding()
                 .padding(.top)
 
             Text("Start each day with a powerful motivation boost. Quotes delivers daily inspiration to keep you moving forward and embrace an extraordinary life!")
                 .font(.system(size: 20, weight: .semibold))
                 .multilineTextAlignment(.center)
-                .foregroundColor(Color("TextColor"))
+                .foregroundColor(Color("TextColorOnBoarding"))
                 .padding(.bottom)
-
+            
+            Spacer()
         }
         .frame(maxWidth: .infinity)
     }
@@ -160,18 +166,21 @@ struct SecondView: View {
 struct ThirdView: View {
     var body: some View {
         VStack {
+            Spacer()
             Text("Never Miss an Inspiration 🔔")
                 .font(.system(size: 30, weight: .bold))
                 .multilineTextAlignment(.center)
-                .foregroundColor(Color("TextColor"))
+                .foregroundColor(Color("TextColorOnBoarding"))
                 .padding()
                 .padding(.top)
 
             Text("To make the most of your motivational journey, we recommend turning on notifications. This way, you'll never miss a moment of inspiration. We'll send you daily doses of motivation and reminders to keep you on track. Enable notifications and let the magic begin!")
                 .font(.system(size: 20, weight: .semibold))
                 .multilineTextAlignment(.center)
-                .foregroundColor(Color("TextColor"))
+                .foregroundColor(Color("TextColorOnBoarding"))
                 .padding(.bottom)
+            
+            Spacer()
         }
         .frame(maxWidth: .infinity)
     }
@@ -180,17 +189,20 @@ struct ThirdView: View {
 struct ForthView: View {
     var body: some View {
         VStack {
+            Spacer()
             Text("Dream Big, Achieve More 🏆")
                 .font(.system(size: 30, weight: .bold))
                 .multilineTextAlignment(.center)
-                .foregroundColor(Color("TextColor"))
+                .foregroundColor(Color("TextColorOnBoarding"))
                 .padding()
             
             Text("Your dreams are within reach. With Quotes, you have the tools to turn your aspirations into reality. Set goals, stay motivated, and conquer obstacles. Your journey to success begins now!")
                 .font(.system(size: 20, weight: .semibold))
                 .multilineTextAlignment(.center)
-                .foregroundColor(Color("TextColor"))
+                .foregroundColor(Color("TextColorOnBoarding"))
                 .padding(.bottom)
+            
+            Spacer()
         }
         .frame(maxWidth: .infinity)
     }
@@ -199,17 +211,20 @@ struct ForthView: View {
 struct FiftView: View {
     var body: some View {
         VStack {
+            Spacer()
             Text("Almost there!")
                 .font(.system(size: 30, weight: .bold))
                 .multilineTextAlignment(.center)
-                .foregroundColor(Color("TextColor"))
+                .foregroundColor(Color("TextColorOnBoarding"))
                 .padding()
 
             Text("")
                 .font(.system(size: 20, weight: .semibold))
                 .multilineTextAlignment(.center)
-                .foregroundColor(Color("TextColor"))
+                .foregroundColor(Color("TextColorOnBoarding"))
                 .padding(.bottom)
+            
+            Spacer()
         }
         .frame(maxWidth: .infinity)
     }
@@ -218,17 +233,20 @@ struct FiftView: View {
 struct SixtView: View {
     var body: some View {
         VStack {
+            Spacer()
             Text("Unlock the Full Experience! 🚀")
                 .font(.system(size: 30, weight: .bold))
                 .multilineTextAlignment(.center)
-                .foregroundColor(Color("TextColor"))
+                .foregroundColor(Color("TextColorOnBoarding"))
                 .padding()
 
             Text("Experience motivation at its finest with our Pro version! Ready to elevate your motivation journey? Go Pro and take it to the next level! 🌟")
                 .font(.system(size: 20, weight: .semibold))
                 .multilineTextAlignment(.center)
-                .foregroundColor(Color("TextColor"))
+                .foregroundColor(Color("TextColorOnBoarding"))
                 .padding(.bottom)
+            
+            Spacer()
         }
         .frame(maxWidth: .infinity)
     }
@@ -237,17 +255,20 @@ struct SixtView: View {
 struct FinishedView: View {
     var body: some View {
         VStack {
+            Spacer()
             Text("You're all set!")
                 .font(.system(size: 30, weight: .bold))
                 .multilineTextAlignment(.center)
-                .foregroundColor(Color("TextColor"))
+                .foregroundColor(Color("TextColorOnBoarding"))
                 .padding()
 
             Text("")
                 .font(.system(size: 20, weight: .semibold))
                 .multilineTextAlignment(.center)
-                .foregroundColor(Color("TextColor"))
+                .foregroundColor(Color("TextColorOnBoarding"))
                 .padding(.bottom)
+            
+            Spacer()
         }
     }
 }

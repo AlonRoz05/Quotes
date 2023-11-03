@@ -13,9 +13,7 @@ struct ContentView: View {
     @State var shouldSend = UserDefaults.standard.bool(forKey: "shouldSendNotifications")
     @AppStorage("_shouldShowOnBoarding") var shouldShowOnBoarding: Bool = true
 
-    @State var quote: ModelsQuote?
-
-    @State var isPro = false
+    @State var isPro = true
 
     let notify = NotificationHandler()
 
@@ -30,25 +28,17 @@ struct ContentView: View {
 
             if isSplashActive {
                 VStack {
-                    Button {
-                        isPro.toggle()
-                    } label: {
-                        Text("be pro")
-                    }
-                    .buttonStyle(.bordered)
-                    VStack {
-                        Image("AppIconForSplash")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 170, height: 170)
-                    }
-                    .scaleEffect(splashLogoSize)
-                    .opacity(splashLogoOpacity)
-                    .onAppear {
-                        withAnimation(.easeIn(duration: 1.3)) {
-                            self.splashLogoSize = 0.8
-                            self.splashLogoOpacity = 0.0
-                        }
+                    Image("AppIconForSplash")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 170, height: 170)
+                }
+                .scaleEffect(splashLogoSize)
+                .opacity(splashLogoOpacity)
+                .onAppear {
+                    withAnimation(.easeIn(duration: 1.3)) {
+                        self.splashLogoSize = 0.8
+                        self.splashLogoOpacity = 0.0
                     }
                 }
                 .onAppear {
@@ -60,32 +50,7 @@ struct ContentView: View {
                 }
             }
             else {
-                if networkManager.isConnected {
-                    if isPro {
-                        ProHomeView()
-                            .task {
-                                if shouldSend {
-                                    let canSend = notify.askPremmision()
-                                    if canSend {
-                                        do {
-                                            quote = try await getQuote()
-                                            notify.sendNotification(quote: quote?.quote ?? "Check out today's quotes!", hour: 9, minute: 0)
-                                        } catch {}
-                                        do {
-                                            quote = try await getQuote()
-                                            notify.sendNotification(quote: quote?.quote ?? "Check out today's quotes!", hour: 15, minute: 0)
-                                        } catch {}
-                                        do {
-                                            quote = try await getQuote()
-                                            notify.sendNotification(quote: quote?.quote ?? "Check out today's quotes!", hour: 21, minute: 0)
-                                        } catch {}
-                                    }
-                                }
-                            }
-                    } else {
-                        FreeHomeView()
-                    }
-                } else {
+                if !networkManager.isConnected {
                     ZStack {
                         Color("BackgroundColor")
                             .edgesIgnoringSafeArea(.all)
@@ -114,6 +79,13 @@ struct ContentView: View {
                                 .padding()
                             }
                         }
+                    }
+                } else {
+                    if isPro {
+                        ProHomeView()
+                        // fix notifications
+                    } else {
+                        FreeHomeView()
                     }
                 }
             }

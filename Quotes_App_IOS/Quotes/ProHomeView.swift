@@ -43,10 +43,10 @@ struct ProHomeView: View {
                     HStack {
                         Button {
                             if shouldSend {
-                                shouldSend = false
+                                shouldSend.toggle()
                                 UserDefaults.standard.set(shouldSend, forKey: "shouldSendNotifications")
                             } else {
-                                shouldSend = true
+                                shouldSend.toggle()
                                 UserDefaults.standard.set(shouldSend, forKey: "shouldSendNotifications")
                             }
                         } label: {
@@ -65,9 +65,7 @@ struct ProHomeView: View {
                         NavigationLink(destination: TagsView(isProVersion: true)) {
                             Image(systemName: "tag")
                                 .foregroundColor(Color("TextColor"))
-                                .padding(.top, 12)
-                                .padding(.bottom, 12)
-                                .padding(.horizontal, 12)
+                                .padding(12)
                                 .background(Color("ButtonColor"), in: RoundedRectangle(cornerRadius: 12))
                         }
 

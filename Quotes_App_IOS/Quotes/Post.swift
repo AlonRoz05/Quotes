@@ -13,15 +13,18 @@ struct Post: View {
 
     var body: some View {
         ZStack {
+            let quoteToShow = quote?.quote ?? String(repeating: "*", count: 113)
+
             RoundedRectangle(cornerRadius: 15, style: .continuous)
                 .frame(width: 355, height: 330)
                 .foregroundColor(Color("QuotesBackgroundColor"))
 
-            Text(quote?.quote ?? "Unable to load quote")
+            Text(quoteToShow)
                 .foregroundColor(Color("TextColor"))
                 .font(.system(size: 22, weight: .bold))
                 .multilineTextAlignment(.center)
                 .frame(width: 345, height: 340)
+                .redacted(reason: quoteToShow == String(repeating: "*", count: 113) ? .placeholder : [])
 
             VStack {
                 HStack {
@@ -46,7 +49,7 @@ func getQuote() async throws -> ModelsQuote {
     usedTag.removeLast()
     usedTag.removeLast()
 
-    let endpoint = "http://127.0.0.1:8000/get-quote/\(String(usedTag.lowercased()))"
+    let endpoint = "https://khui4zeq435ucddfdehdm5sgvy0hfmxq.lambda-url.eu-north-1.on.aws/quotes?input_tag=\(String(usedTag.lowercased()))"
 
     guard let url = URL(string: endpoint) else {
         throw QuoteError.invalidURL
