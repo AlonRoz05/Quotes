@@ -1,4 +1,4 @@
-from datasets import load_dataset
+from datasets import load_dataset, concatenate_datasets
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, Seq2SeqTrainingArguments, Seq2SeqTrainer, DataCollatorForSeq2Seq
 
 import nltk
@@ -8,7 +8,6 @@ import numpy as np
 from nltk.tokenize import sent_tokenize
 
 nltk.download("punkt")
-
 metric = evaluate.load("rouge")
 
 model_id = 'google/flan-t5-large'
@@ -17,7 +16,7 @@ tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForSeq2SeqLM.from_pretrained(model_id)
 
 # Load the data
-dataset = load_dataset("csv", data_files="Data/New_dataset/Upliftweet_dataset_updated.csv", sep=",", split="train").train_test_split(test_size=0.2, shuffle=True)
+dataset = load_dataset("Rozi05/quotes_dataset", split="train").train_test_split(test_size=0.2, shuffle=True)
 
 max_source_length = 275
 max_target_length = 512
@@ -38,11 +37,6 @@ def preprocess_function(sample, padding="max_length"):
     return model_inputs
 
 tokenized_dataset = dataset.map(preprocess_function, batched=True, remove_columns=["index", "quote", "tags"])
-
-data_collator = DataCollatorForSeq2Seq(tokenizer,
-                                       model = model, 
-                                       label_pad_token_id = -100, 
-                                       pad_to_multiple_of = 8)
 
 # Compute metrics function
 def postprocess_text(preds, labels):
@@ -85,22 +79,22 @@ args = Seq2SeqTrainingArguments(
     output_dir = "model_training",
     evaluation_strategy = "epoch",
     save_strategy = "epoch",
-    weight_decay = 0.01,
-    learning_rate = 1e-3,
+    learning_rate = 5e-5,
     save_total_limit = 2,
     num_train_epochs = 10,
-    per_device_train_batch_size = 16,
-    per_device_eval_batch_size = 16,
+    per_device_train_batch_size = 32,
+    per_device_eval_batch_size = 32,
     load_best_model_at_end = True,
     predict_with_generate = True,
-    fp16 = True,
+    fp16 = False,
     push_to_hub = True,
-    hub_model_id = "Quotes_Model_v2"
+    hub_model_id = "Quotes_Model_Trained"
 )
 
 trainer = Seq2SeqTrainer(
     model = model,
     args = args,
+    data_collator = data_collator,
     train_dataset = tokenized_dataset["train"],
     eval_dataset = tokenized_dataset["test"],
     compute_metrics = compute_metrics,
@@ -113,5 +107,5 @@ trainer.push_to_hub("End of training")
 trainer.save_model("Models")
 tokenizer.save_pretrained("Tokenizer")
 
-model.push_to_hub("Quotes_Model_v2")
-tokenizer.push_to_hub("Quotes_Model_v2")
+model.push_to_hub("Quotes_Model_Trained")
+tokenizer.push_to_hub("Quotes_Model_Trained")
