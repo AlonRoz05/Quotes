@@ -27,7 +27,7 @@ struct ContentView: View {
     @State var colorForHomeText = Color("TextColor")
     
     @State private var showingSettingsSheet = false
-    
+
     var body: some View {
         ZStack {
             Color.black
@@ -133,6 +133,7 @@ struct ContentView: View {
             }
         }
         .confirmationDialog("seeingSettings", isPresented: $showingSettingsSheet, actions: {
+            Link("Follow us on IG", destination: URL(string: "https://www.instagram.com/quotes_app_/")!)
             Button("Choose Tags") {
                 withAnimation(.spring()) {
                     viewNum = 1

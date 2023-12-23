@@ -164,12 +164,10 @@ func getTag(isPro: Bool, seed: Int) -> String {
 func getQuote(isPro: Bool, seed: Int) async throws -> ModelsQuote {
     var usedTag = getTag(isPro: isPro, seed: seed)
     
-    print(usedTag)
-    
     usedTag.removeLast()
     usedTag.removeLast()
 
-    let endpoint = "https://khui4zeq435ucddfdehdm5sgvy0hfmxq.lambda-url.eu-north-1.on.aws/quotes?input_tag=\(String(usedTag.lowercased()))"
+    let endpoint = "https://l6j8614hxj.execute-api.us-east-1.amazonaws.com/q-api/quotes-generation?input_tag=\(String(usedTag.lowercased()))"
     
     guard let url = URL(string: endpoint) else {
         throw QuoteError.invalidURL

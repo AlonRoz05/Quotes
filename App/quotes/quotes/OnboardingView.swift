@@ -4,7 +4,6 @@ enum BoardingState: Int {
     case empty = 0
     case first
     case second
-    case third
     case last
 }
 
@@ -36,10 +35,6 @@ struct OnboardingView: View {
                     case 2:
                         ThirdView()
                             .transition(transetion)
-                    case 3:
-                        Spacer()
-                        ForthView()
-                            .transition(transetion)
                     default:
                         FinishedView()
                     }
@@ -55,9 +50,6 @@ struct OnboardingView: View {
                             buttonText = "Sure"
                             boardingState = .second
                         case .second:
-                            buttonText = "Got it"
-                            boardingState = .third
-                        case .third:
                             buttonText = "Done!"
                             boardingState = .last
                         case .last:
@@ -150,38 +142,6 @@ struct SecondView: View {
 }
 
 struct ThirdView: View {
-    var body: some View {
-        VStack {
-            Spacer()
-            Text("Never Miss an Inspiration!")
-                .font(.custom("InstagramSans-Bold", size: 30))
-                .multilineTextAlignment(.center)
-                .foregroundColor(Color("TextColor"))
-                .padding()
-                .padding(.top)
-
-            Text("To maximize your motivation journey, enable notifications for daily inspiration and stay on track. Start the magic now!")
-                .font(.custom("InstagramSans-Bold", size: 18))
-                .multilineTextAlignment(.center)
-                .foregroundColor(Color("TextColor"))
-                .padding(.bottom)
-                .frame(width: 350)
-            
-            Spacer()
-            
-            Text("🔔")
-                .font(.system(size: 72, weight: .semibold))
-                .multilineTextAlignment(.center)
-                .foregroundColor(Color("TextColor"))
-                .padding(.bottom)
-            
-            Spacer()
-        }
-        .frame(maxWidth: .infinity)
-    }
-}
-
-struct ForthView: View {
     var body: some View {
         VStack {
             Spacer()
