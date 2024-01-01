@@ -159,18 +159,13 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-*.png
-
 .vscode
 .DS_Store
 
 Fonts
-Model_data
-Tokenizers
+Data
+Imgs
+
 Twitter
 
-twitter_data.py
-app_api.py
-
-Data/New_dataset/Upliftweet_dataset.csv
-Data/New_dataset/Upliftweet_dataset_updated.csv
+Quotes-V2-model
